@@ -1,12 +1,6 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 
-"""
-Created on Tue Oct 22 22:04:41 2019
-
-@author: Filip
-"""
-
 import numpy as np
 import tensorflow as tf
 from math import ceil
@@ -245,6 +239,11 @@ def model(
     with tf.control_dependencies(update_ops):
         optimizer = \
             tf.train.AdamOptimizer(learning_rate=learning_rate).minimize(cost)
+            
+    # for saving batch normalization parameters
+        
+    variables = tf.get_collection(tf.GraphKeys.GLOBAL_VARIABLES,
+                              scope='batch_normalization')
 
     init = tf.global_variables_initializer()
 
@@ -324,7 +323,7 @@ def model(
 
             # plotting the learning rate decay
 
-            if print_cost == True and epoch + 1 % 25 == 0:
+            if print_cost == True and (epoch + 1) % 25 == 0:
                 plt.plot(iter_axis, learning_rate_axis)
                 plt.show()
 
@@ -350,9 +349,10 @@ def model(
         # saving learnt parameters
 
         (weights, biases) = sess.run([weights, biases])
+        b_norm = sess.run(variables)
         print ('Parameters have been trained!')
 
-        return (weights, biases)
+        return (weights, biases, b_norm)
 
 
 def main(validation_images_no):
@@ -371,7 +371,7 @@ def main(validation_images_no):
 
     # learning the model and saving the learnt parameters
 
-    (weights, biases) = model(
+    (weights, biases, b_norm) = model(
         X_train,
         y_train,
         X_valid,
@@ -381,15 +381,15 @@ def main(validation_images_no):
         hidden_layers=[100, 50],
         learning_rate_init=0.0001,
         decay_rate=0.1,
-        num_epochs=100,
-        minibatch_size=32,
+        num_epochs=300,
+        minibatch_size=64,
         print_cost=True,
-        keep_prob_val=0.7,
-        lambda_reg=0.01,
+        keep_prob_val=0.8,
+        lambda_reg=0.5,
         )
 
-    return (weights, biases)
+    return (weights, biases, b_norm)
 
 
 if __name__ == '__main__':
-    main(5)
+    (weights, biases, b_norm) = main(5)
