@@ -6,5 +6,5 @@ In the second solution, convolutional layers are used and a model based on VGG-1
 
 Files:  
 DNN_architecture.py -> script containing implementation of scallable DNN  
-CNN_architecture -> script containing implementation of scallable CNN 
-CNN_CNN_for_trafficsigns.ipynb -> Google Colab notebook showing results of using CNN
+CNN_architecture -> script containing implementation of scallable CNN   
+CNN_for_trafficsigns.ipynb -> Google Colab notebook showing results of using CNN
